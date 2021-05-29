@@ -1,1 +1,1 @@
-fileupload-to-gas
+# JSONファイルを読み込んでスプレッドシートに転機する
