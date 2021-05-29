@@ -4,7 +4,7 @@ function uploadJSON(){
 	if (question == "ok") {
 		//シート生成
 		let sheetName = Browser.inputBox('シート名を入力してください');
-		let curSheet.insertSheet(sheetName);
+		curSheet.insertSheet(sheetName);
 
 		//ファイル指定
 		let fileID = Browser.inputBox('ファイルのIDを入力してください');
@@ -22,7 +22,7 @@ function uploadJSON(){
 }
 
 function getObj(id){
-	letv file = DriveApp.getFileById(id);
+	let file = DriveApp.getFileById(id);
 	let blob = file.getBlob();
 	let data = blob.getDataAsString();
 	let jsonObj = JSON.parse(data);
