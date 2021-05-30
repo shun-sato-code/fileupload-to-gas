@@ -4,6 +4,7 @@ function uploadJSON(){
 	if (question == "ok") {
 		//シート生成
 		let sheetName = Browser.inputBox('シート名を入力してください');
+    let curSheet = SpreadsheetApp.getActiveSpreadsheet();
 		curSheet.insertSheet(sheetName);
 
 		//ファイル指定
@@ -48,4 +49,38 @@ function getObj(id){
 	col = dataArr[0].length;
 	sheet.getRange(1,1,row,col).setValues(dataArr);
 }
+
+function(changeTimeByFormura){
+	const sheet = SpreadsheetApp.getActiveSheet();
+	let lasrRow = sheet.getRange(1.1).getNextDataCell(SpreadsheetApp.Direction.DOWN).getRow();
+	Logger.log(lasrRow);
+	sheet.insertColumnAfter(1);
+
+	let value = `ARRAYFORMURA(SUBSTITUTE(SUBSTITUTE(A1:A${lasrRow},'T',' '),'Z',''))`;
+	Logger.log(value);
+	sheet.getRange(1,2).setValue(value);
+
+	date = new Data(sheet.getRange(`B1:B${lasrRow}`).setValue());
+	data.setHours(data.getHours() + 9);
+	sheet.getRange(`B1:B${lasrRow}`).setValue(data).setNumberFormat('YYYY-MM-dd HH:00');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
