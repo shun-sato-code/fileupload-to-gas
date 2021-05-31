@@ -1,4 +1,4 @@
-function uploadJSON(){
+function UploadJSON(){
 	let question = Browser.msgBox('アップロードを開始しますか',Browser.Buttons.OK_CANCEL);
 
 	if (question == "ok") {
@@ -8,7 +8,8 @@ function uploadJSON(){
 		curSheet.insertSheet(sheetName);
 
 		//ファイル指定
-		let fileID = Browser.inputBox('ファイルのIDを入力してください');
+		let fileUrl = Browser.inputBox('ファイルのURLを入力してください');
+		let fileID = fileUrl.slice(32,-17);
 		Browser.msgBox(`「${fileID}」をアップロードします`);
 
 		if (sheetName == 'cancel') {
@@ -22,65 +23,41 @@ function uploadJSON(){
 	}
 }
 
+
 function getObj(id){
 	let file = DriveApp.getFileById(id);
 	let blob = file.getBlob();
 	let data = blob.getDataAsString();
+  Logger.log(data);
 	let jsonObj = JSON.parse(data);
-	Logger.log(jsonObj.hits.total);
+	Logger.log(jsonObj.total);
 
-	let dataCount = jsonObj.hits.total;
+	let dataCount = jsonObj.total;
 
 	let dataArr = [];
-	dataArr.push(['req_create_date','content']);
+	dataArr.push(['time','content']);
 
 	for (let i = 0; i < dataCount; i++) {
-		let req_create_date = jsonObj.hits.hits[i]._source.req_create_date;
-		let content = jsonObj.hits.hits[i]._source.content;
-		dataArr.push([req_create_date,content]);
+		let content = jsonObj.hits[i].content;
+		let originDate = jsonObj.hits[i].time;
+		let editedDate = originDate.replace('T',' ').replace('Z','');
+		let fixedDate = new Date(editedDate);
+		fixedDate.setHours(fixedDate.getHours()+9);
+
+
+		dataArr.push([fixedDate,content]);
 
 		Logger.log(`${i+1}件目`);
-		Logger.log(req_create_date);
-		Logger.Log(content);
+		Logger.log(fixedDate);
+		Logger.log(content);
 	}
 
 	sheet = SpreadsheetApp.getActiveSheet();
 	row = dataArr.length;
 	col = dataArr[0].length;
+
 	sheet.getRange(1,1,row,col).setValues(dataArr);
+	sheet.getRange('A2:A').setNumberFormat('YYYY-MM-dd HH:00');
+
+	Browser.msgBox('アップロードが完了しました');
 }
-
-function(changeTimeByFormura){
-	const sheet = SpreadsheetApp.getActiveSheet();
-	let lasrRow = sheet.getRange(1.1).getNextDataCell(SpreadsheetApp.Direction.DOWN).getRow();
-	Logger.log(lasrRow);
-	sheet.insertColumnAfter(1);
-
-	let value = `ARRAYFORMURA(SUBSTITUTE(SUBSTITUTE(A1:A${lasrRow},'T',' '),'Z',''))`;
-	Logger.log(value);
-	sheet.getRange(1,2).setValue(value);
-
-	date = new Data(sheet.getRange(`B1:B${lasrRow}`).setValue());
-	data.setHours(data.getHours() + 9);
-	sheet.getRange(`B1:B${lasrRow}`).setValue(data).setNumberFormat('YYYY-MM-dd HH:00');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
