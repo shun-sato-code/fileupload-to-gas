@@ -2,12 +2,11 @@ function UploadJSON(){
 	let question = Browser.msgBox('アップロードを開始しますか',Browser.Buttons.OK_CANCEL);
 
 	if (question == "ok") {
-		//シート生成
+
 		let sheetName = Browser.inputBox('シート名を入力してください');
     let curSheet = SpreadsheetApp.getActiveSpreadsheet();
 		curSheet.insertSheet(sheetName);
 
-		//ファイル指定
 		let fileUrl = Browser.inputBox('ファイルのURLを入力してください');
 		let fileID = fileUrl.slice(32,-17);
 		Browser.msgBox(`「${fileID}」をアップロードします`);
@@ -15,7 +14,7 @@ function UploadJSON(){
 		if (sheetName == 'cancel') {
 			Browser.msgBox('終了します');
 		} else {
-			//OKなら読み込む
+
 			getObj(fileID);
 		}
 	} else {
